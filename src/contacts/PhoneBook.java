@@ -6,7 +6,7 @@ import java.util.List;
 
 public class PhoneBook {
 
-    private List<Contact> contacts;
+    private final List<Contact> contacts;
 
     public PhoneBook() {
         contacts = new ArrayList<>();
@@ -17,16 +17,15 @@ public class PhoneBook {
     }
 
     public Contact getContact(int id) {
-        return contacts.get(id);
+        return contacts.get(id - 1);
     }
 
     public void addContact(Contact contact) {
-        contact.setId(contacts.size() + 1);
         contacts.add(contact);
     }
 
-    public void updateContact(Contact contact) {
-        contacts.set(contact.getId(), contact);
+    public void updateContact(Contact contact, int id) {
+        contacts.set(id - 1, contact);
     }
 
     public void removeContact(int id) {

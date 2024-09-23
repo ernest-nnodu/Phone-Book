@@ -7,13 +7,16 @@ public class Contact {
     private String phoneNumber;
 
     public Contact() {
-
+        name = "";
+        surname = "";
+        phoneNumber = "";
     }
 
     public Contact(String name, String surname, String phoneNumber) {
         this.name = name;
         this.surname = surname;
-        this.phoneNumber = phoneNumber;
+        this.phoneNumber = "";
+        this.setPhoneNumber(phoneNumber);
     }
 
     public String getSurname() {
@@ -37,6 +40,23 @@ public class Contact {
     }
 
     public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
+
+        if (numberValid(phoneNumber)) {
+            this.phoneNumber = phoneNumber;
+        } else {
+            this.phoneNumber = "[no number]";
+        }
+    }
+
+    private boolean numberValid(String phoneNumber) {
+
+        String pattern = "\\+?(\\([a-zA-Z0-9]+\\)([\\s-][a-zA-Z0-9]{2,})?|" +
+                "[a-zA-Z0-9]+([\\s-]\\(?[a-zA-Z0-9]{2,}\\)?)?)" + "([\\s-][a-zA-Z0-9]{2,})*";
+
+        return phoneNumber.matches(pattern);
+    }
+
+    public boolean hasNumber() {
+        return phoneNumber.isEmpty() || phoneNumber.equals("[no number]");
     }
 }

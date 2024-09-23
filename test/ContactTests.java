@@ -24,9 +24,9 @@ public class ContactTests {
     public void testCreateEmptyContact() {
         Contact contact = new Contact();
 
-        assertNull(contact.getName());
-        assertNull(contact.getSurname());
-        assertNull(contact.getPhoneNumber());
+        assertEquals("", contact.getName());
+        assertEquals("", contact.getSurname());
+        assertEquals("", contact.getPhoneNumber());
     }
 
     @Test
@@ -35,7 +35,7 @@ public class ContactTests {
 
         String expectedName = "John";
         String expectedSurname = "Doe";
-        String expectedPhoneNumber = "1234-567-89";
+        String expectedPhoneNumber = "+0 (123) 456-789-ABcd";
 
         Contact contact = new Contact();
         contact.setName(expectedName);
@@ -64,4 +64,28 @@ public class ContactTests {
         assertEquals(expectedPhoneNumber, contact.getPhoneNumber());
 
     }
+
+    @Test
+    @DisplayName("Modify valid phone number with valid phone number")
+    public void testModifyValidPhoneNumberWithValidPhoneNumber() {
+
+        String expectedPhoneNumber = "(123) 234 345-456";
+
+        Contact contact = new Contact("Mary", "Appelbaum", "000-111-222");
+        contact.setPhoneNumber(expectedPhoneNumber);
+
+        assertEquals(expectedPhoneNumber, contact.getPhoneNumber());
+    }
+
+   /* @Test
+    @DisplayName("Modify valid phone number with invalid phone number")
+    public void testModifyValidPhoneNumberWithInvalidPhoneNumber() {
+
+        String expectedPhoneNumber = "";
+
+        Contact contact = new Contact("Mary", "Appelbaum", "000-111-222");
+        contact.setPhoneNumber("+0(123)456-789-9999");
+
+        assertEquals(expectedPhoneNumber, contact.getPhoneNumber());
+    }*/
 }
