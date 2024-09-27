@@ -1,6 +1,7 @@
 package contacts;
 
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,6 +26,7 @@ public class PhoneBook {
     }
 
     public void updateContact(Contact contact, int id) {
+        contact.setTimeLastEdited(LocalDateTime.now());
         contacts.set(id - 1, contact);
     }
 

@@ -1,38 +1,26 @@
 package contacts;
 
+import java.time.LocalDateTime;
+
 public class Contact {
 
-    private String name;
-    private String surname;
     private String phoneNumber;
+    private boolean isPerson;
+    private LocalDateTime timeCreated;
+    private LocalDateTime timeLastEdited;
 
     public Contact() {
-        name = "";
-        surname = "";
         phoneNumber = "";
+        timeCreated = LocalDateTime.now();
+        timeLastEdited = LocalDateTime.now();
     }
 
-    public Contact(String name, String surname, String phoneNumber) {
-        this.name = name;
-        this.surname = surname;
+    public Contact(String phoneNumber, boolean isPerson) {
         this.phoneNumber = "";
         this.setPhoneNumber(phoneNumber);
-    }
-
-    public String getSurname() {
-        return surname;
-    }
-
-    public void setSurname(String surname) {
-        this.surname = surname;
-    }
-
-    public String getName() {
-        return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
+        this.isPerson = isPerson;
+        timeCreated = LocalDateTime.now();
+        timeLastEdited = LocalDateTime.now();
     }
 
     public String getPhoneNumber() {
@@ -58,5 +46,29 @@ public class Contact {
 
     public boolean hasNumber() {
         return phoneNumber.isEmpty() || phoneNumber.equals("[no number]");
+    }
+
+    public boolean isPerson() {
+        return isPerson;
+    }
+
+    public void setPerson(boolean person) {
+        isPerson = person;
+    }
+
+    public LocalDateTime getTimeCreated() {
+        return timeCreated;
+    }
+
+    public void setTimeCreated(LocalDateTime timeCreated) {
+        this.timeCreated = timeCreated;
+    }
+
+    public LocalDateTime getTimeLastEdited() {
+        return timeLastEdited;
+    }
+
+    public void setTimeLastEdited(LocalDateTime timeLastEdited) {
+        this.timeLastEdited = timeLastEdited;
     }
 }
