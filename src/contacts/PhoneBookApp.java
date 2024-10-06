@@ -8,7 +8,7 @@ public class PhoneBookApp {
     private Console console;
     private PhoneBook phoneBook;
     private boolean runApp;
-    private final String menuMessage = "Enter action (add, remove, edit, count, info, exit):";
+    private final String menuMessage = "[menu] Enter action (add, list, search, count, exit):";
     private final String contactTypePrompt = "Enter the type (person, organization):";
     private final String namePrompt = "Enter the name";
     private final String surnamePrompt = "Enter the surname";
@@ -43,21 +43,91 @@ public class PhoneBookApp {
             case "add":
                 addContact();
                 break;
-            case "remove":
-                removeContact();
+            case "list":
+                processListCommand();
                 break;
-            case "edit":
-                editContact();
+            case "search":
+                processSearchCommand();
                 break;
             case "count":
                 countContacts();
                 break;
-            case "info":
-                displayContactInfo();
-                break;
             case "exit":
                 runApp = false;
         }
+    }
+
+    private void processSearchCommand() {
+        String searchQuery = console.read("Enter search query:");
+        List<Contact> contactList = phoneBook.getContacts(searchQuery);
+        System.out.println("Found " + contactList.size() + " results:");
+        displayContacts(contactList);
+    }
+
+    private void processListCommand() {
+        displayContacts(phoneBook.getContacts());
+        String userInput = console.read("\n[list] Enter action ([number], back):");
+        if (userInput.equals("back")) {
+            return;
+        }
+        processRecordCommand(Integer.parseInt(userInput));
+    }
+
+    private void listContacts() {
+        List<Contact> contactList = phoneBook.getContacts();
+
+        displayContacts(contactList);
+    }
+
+    private void displayContacts(List<Contact> contactList) {
+        for (int index = 0; index < contactList.size(); index++) {
+            Contact contact = contactList.get(index);
+            List<String> fields = contact.getFields();
+            System.out.print((index + 1) + ". " + contact.getFieldValue("name"));
+            if (fields.contains("surname")) {
+                System.out.println(" " + contact.getFieldValue("surname"));
+            }
+        }
+    }
+
+    private void processRecordCommand(int recordNumber) {
+        Contact contact = phoneBook.getContact(recordNumber);
+        List<String> fields = contact.getFields();
+        displayRecord(contact);
+
+        String userInput = console.read("\n[record] Enter action (edit, delete, menu):");
+
+        switch (userInput) {
+            case "edit":
+                processEditCommand(contact, fields);
+                break;
+            case "delete":
+                processDeleteCommand();
+                break;
+            case "menu":
+        }
+    }
+
+    private void processDeleteCommand() {
+        removeContact();
+    }
+
+    private void displayRecord(Contact contact) {
+        System.out.println(contact.toString());
+    }
+
+    private void processEditCommand(Contact contact, List<String> fields) {
+        StringBuilder prompt = new StringBuilder();
+        prompt.append("Select a field (").append(fields.get(0));
+        for (int index = 1; index < fields.size(); index++) {
+            prompt.append(", ").append(fields.get(index));
+        }
+        prompt.append("):");
+        String fieldToEdit = console.read(prompt.toString());
+        String fieldValue = console.read("Enter " + fieldToEdit + ":");
+        contact.setField(fieldToEdit, fieldValue);
+        System.out.println("Saved");
+        displayRecord(contact);
     }
 
     private void removeContact() {
@@ -91,9 +161,9 @@ public class PhoneBookApp {
     private Contact getContactDetails(int selectedContact) {
         Contact contact = phoneBook.getContact(selectedContact);
         
-        if (contact.isPerson()) {
-            return getPersonDetails(contact);
-        }
+//        if (contact.isPerson()) {
+//            return getPersonDetails(contact);
+//        }
         return getOrganizationDetails(contact);
     }
 
@@ -152,7 +222,7 @@ public class PhoneBookApp {
         int contactIndex = Integer.parseInt(console.read("Enter index to show info:"));
         Contact contact = phoneBook.getContact(contactIndex);
         
-        if (contact.isPerson()) {
+        /*if (contact.isPerson()) {
             PersonContact personContact = (PersonContact) contact;
             System.out.println("Name: " + personContact.getName());
             System.out.println("Surname: " + personContact.getSurname());
@@ -168,24 +238,7 @@ public class PhoneBookApp {
             System.out.println("Number: " + organizationContact.getPhoneNumber());
             System.out.println("Time created: " + organizationContact.getTimeCreated());
             System.out.println("Time last edit: " + organizationContact.getTimeLastEdited());
-        }
-    }
-    
-    private void listContacts() {
-        List<Contact> contactList = phoneBook.getContacts();
-
-        for (int index = 0; index < contactList.size(); index++) {
-            Contact contact = contactList.get(index);
-            if (contact.isPerson()) {
-                PersonContact personContact = (PersonContact) contact; 
-                System.out.println((index + 1) + ". " +
-                        personContact.getName() + " " + personContact.getSurname());
-            } else {
-                OrganizationContact organizationContact = (OrganizationContact) contact; 
-                System.out.println((index + 1) + ". " +
-                        organizationContact.getName());
-            }
-        }
+        }*/
     }
 
     private void countContacts() {
@@ -193,10 +246,12 @@ public class PhoneBookApp {
     }
 
     private void addContact() {
+        Console console = new Console();
+
         String contactType = console.read(contactTypePrompt);
         Contact contact = switch (contactType) {
             case "person" -> createPersonContact();
-            case "organization" -> addOrganizationContact();
+            case "organization" -> createOrganizationContact();
             default -> new Contact();
         };
 
@@ -207,13 +262,13 @@ public class PhoneBookApp {
         System.out.println(recordAddedMessage);
     }
 
-    private Contact addOrganizationContact() {
+    private Contact createOrganizationContact() {
 
         String name = console.read("Enter the organization name");
         String address = console.read("Enter the address");
         String number = console.read(numberPrompt);
 
-        return new OrganizationContact(number, false, name, address);
+        return new OrganizationContact(number, name, address);
     }
 
     private Contact createPersonContact() {
@@ -233,7 +288,7 @@ public class PhoneBookApp {
         }
         String number = console.read(numberPrompt);
 
-        return new PersonContact(number, true, name, surname, birthDate, gender);
+        return new PersonContact(number, name, surname, birthDate, gender);
     }
 
     private String readUserCommand() {

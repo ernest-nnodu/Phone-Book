@@ -21,6 +21,22 @@ public class PhoneBook {
         return contacts.get(id - 1);
     }
 
+    public List<Contact> getContacts(String query) {
+        List<Contact> contactList = new ArrayList<>();
+        String searchQuery = ".*" + query.toLowerCase() + ".*";
+
+        for (Contact contact : contacts) {
+            List<String> fields = contact.getFields();
+            for (String field : fields) {
+                String fieldValue = contact.getFieldValue(field);
+                if (fieldValue.toLowerCase().matches(searchQuery)){
+                    contactList.add(contact);
+                }
+            }
+        }
+        return contactList;
+    }
+
     public void addContact(Contact contact) {
         contacts.add(contact);
     }

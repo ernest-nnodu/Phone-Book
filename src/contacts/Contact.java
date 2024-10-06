@@ -1,13 +1,14 @@
 package contacts;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Contact {
 
-    private String phoneNumber;
-    private boolean isPerson;
-    private LocalDateTime timeCreated;
-    private LocalDateTime timeLastEdited;
+    protected String phoneNumber;
+    protected LocalDateTime timeCreated;
+    protected LocalDateTime timeLastEdited;
 
     public Contact() {
         phoneNumber = "";
@@ -15,10 +16,9 @@ public class Contact {
         timeLastEdited = LocalDateTime.now();
     }
 
-    public Contact(String phoneNumber, boolean isPerson) {
+    public Contact(String phoneNumber) {
         this.phoneNumber = "";
         this.setPhoneNumber(phoneNumber);
-        this.isPerson = isPerson;
         timeCreated = LocalDateTime.now();
         timeLastEdited = LocalDateTime.now();
     }
@@ -48,14 +48,6 @@ public class Contact {
         return phoneNumber.isEmpty() || phoneNumber.equals("[no number]");
     }
 
-    public boolean isPerson() {
-        return isPerson;
-    }
-
-    public void setPerson(boolean person) {
-        isPerson = person;
-    }
-
     public LocalDateTime getTimeCreated() {
         return timeCreated;
     }
@@ -70,5 +62,24 @@ public class Contact {
 
     public void setTimeLastEdited(LocalDateTime timeLastEdited) {
         this.timeLastEdited = timeLastEdited;
+    }
+
+    public List<String> getFields() {
+        List<String> fields = new ArrayList<>();
+        fields.add("number");
+        return fields;
+    }
+
+    public String getFieldValue(String field) {
+        if (field.equals("number")) {
+            return this.phoneNumber;
+        }
+        return "";
+    }
+
+    public void setField(String field, String value) {
+        if (field.equals("number")) {
+            setPhoneNumber(value);
+        }
     }
 }
